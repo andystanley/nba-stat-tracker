@@ -1,7 +1,30 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
+import axios from 'axios';
 
 export default class StatsInput extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      stats: []
+    };
+  }
+
+  componentDidMount() {
+    axios.get('https://nba-players.herokuapp.com/players-stats-teams/' + this.props.navigation.state.params.team)
+    .then(res => {
+      const players = res.data.map(player => player.name);
+      var stats = [];
+      for (i=0; i<players.length; i++) {
+        let player = new playerStats(players[i], 0, 0, 0, 0, 0, 0, 0, 0);
+        stats.push(player);
+      }
+      this.setState({ stats });
+    });
+  }
+
+  
   render() {
     const { navigate } = this.props.navigation;
     return (
@@ -11,7 +34,7 @@ export default class StatsInput extends Component {
           <Button title="End Game" onPress={() => navigate('TopPerformers')}/>
         </View>
         <View style={styles.output}>
-          <Text style={{fontSize: 25, color: 'red'}}>Demar Derozan Scored 2 Points</Text>
+          <Text style={{fontSize: 25, color: 'red'}}>Demar Derozan Scored 2 points</Text>
           <Text style={{fontSize: 15, color: 'red'}}>Kyle Lowry Committed a Personal Foul</Text>
           <Text style={{fontSize: 10, color: 'red'}}>Serge Ibaka Missed a Free Throw</Text>
         </View>
@@ -57,6 +80,18 @@ export default class StatsInput extends Component {
       </View>
     );
   }
+}
+
+function playerStats(name, points, assists, rebounds, steals, blocks, turnovers, ftMade, ftMissed) {
+  this.name = name;
+  this.points = points;
+  this.assists = assists;
+  this.rebounds = rebounds;
+  this.steals = steals;
+  this.blocks = blocks;
+  this.turnovers = turnovers;
+  this.ftMade = ftMade;
+  this.ftMissed = ftMissed;
 }
 
 const styles = StyleSheet.create({

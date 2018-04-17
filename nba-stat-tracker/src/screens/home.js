@@ -1,10 +1,38 @@
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, Button } from 'react-native';
+import { ScrollView, Alert, StyleSheet, Text, View, Image, Button,TouchableOpacity } from 'react-native';
+import axios from 'axios';
 
 export default class Home extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      teams: [],
+      team: ''
+    };
+  }
+
+  componentDidMount() {
+    axios.get('https://nba-players.herokuapp.com/teams')
+    .then(res => {
+      const teams = res.data;
+      this.setState({ teams });
+    });
+  }
+
   static navigationOptions = {
     title: 'Home'
   };
+
+  renderTeams() {
+    return this.state.teams.map((team) => {
+      return (
+        <TouchableOpacity key={team} onPress={() => this.setState( { team })}>
+          <Text style={styles.team}>{team}</Text>
+        </TouchableOpacity>
+      );
+    });
+  }
 
   render() {
     const { navigate } = this.props.navigation;
@@ -17,10 +45,11 @@ export default class Home extends Component {
           />
           <Text style={styles.title}>Stat Tracker</Text>
         </View>
+        <ScrollView style={styles.teams}>{this.renderTeams()}</ScrollView>
         <View style={styles.footer}>
           <Button 
             title="Continue" 
-            onPress={() => navigate('StatsInput')}/>
+            onPress={() => navigate('StatsInput', { team: this.state.team })}/>
         </View>
       </View>
     );
@@ -30,15 +59,18 @@ export default class Home extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
     alignItems: 'center',
+    backgroundColor: '#fff'
   },
   header: {
-    marginTop: -30,
     alignItems: 'center',
+    marginTop: -30,
+  },
+  teams: {
+    width: '100%',
+    marginBottom: 20
   },
   footer: {
-    position: 'absolute',
     bottom: 20,
   },
   logo: {
@@ -50,4 +82,8 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: -40,
   },
+  team: {
+    fontSize: 20,
+    textAlign: 'center',
+  }
 });
