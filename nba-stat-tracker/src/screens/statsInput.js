@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Alert, StyleSheet, Text, View, Button, TouchableOpacity, Modal } from 'react-native';
+import { Alert, StyleSheet, Text, View, Button, TouchableOpacity, Modal, ScrollView } from 'react-native';
 import axios from 'axios';
 
 export default class StatsInput extends Component {
@@ -10,6 +10,7 @@ export default class StatsInput extends Component {
       stats: [],
       selectedBtn: null,
       modalVisible: false,
+      question: null,
       msg1: null,
       msg2: null,
       msg3: null
@@ -32,18 +33,57 @@ export default class StatsInput extends Component {
   modalClosedHandler = () => {
     this.setState({
       modalVisible: false
-    })
-  }
-
-  btnSelectedHandler = button => {
-    this.setState({
-      modalVisible: true,
-      selectedBtn: button
     });
   }
 
-  playerSelectedHandler = (player) => {
+  btnSelectedHandler = button => {
+    let question;
+    
+    switch (button) {
+      case "2pt":
+        question = "Who scored 2 points?";
+        break;
+      case "3pt":
+        question = "Who scored 3 points?";
+        break;
+      case "assist":
+        question = "Who assisted?";
+        break;
+      case "ftMade":
+        question = "Who scored the free throw";
+        break;
+      case "ftMissed":
+        question = "Who missed the free throw?";
+        break;
+      case "block":
+        question = "Who blocked the shot?";
+        break;
+      case "steal":
+        question = "Who stole the ball?";
+        break;
+      case "turnover":
+        question = "Who lost the ball?";
+        break;
+      case "rebound":
+        question = "Who got the rebound?";
+        break;
+      case "foul":
+        question = "Who committed the foul?";
+        break;
+      default:
+        break;
+    }
+
+    this.setState({
+      selectedBtn: button,
+      question,
+      modalVisible: true
+    });
+  }
+
+  playerSelectedHandler = player => {
     let msg;
+    let question = null;
     let stats = this.state.stats.map((p) => {
       // Find the correct player
       if (p.name === player) {
@@ -51,15 +91,22 @@ export default class StatsInput extends Component {
           case "2pt":
             p.points += 2;
             msg = p.name + " scored 2 points";
+            this.btnSelectedHandler("assist");
             break;
           case "3pt":
             p.points += 3;
             msg = p.name + " scored 3 points";
+            this.btnSelectedHandler("assist");
+            break;
+          case "assist":
+            p.assists += 1;
+            msg = p.name + " got the assist";
             break;
           case "ftMade":
             p.ftMade += 1;
             p.points += 1;
             msg = p.name + " made a free throw";
+            this.btnSelectedHandler("assist");
             break;
           case "ftMissed":
             p.ftMissed += 1;
@@ -92,12 +139,16 @@ export default class StatsInput extends Component {
       return p;
     }); 
 
+    let modalVisible = this.state.selectedBtn === '2pt' || this.state.selectedBtn === '3pt' || this.state.selectedBtn === 'ftMade' ? true : false;
+    let selectedBtn = this.state.selectedBtn === '2pt' || this.state.selectedBtn === '3pt' || this.state.selectedBtn === 'ftMade' ? 'assist' : this.state.selectedBtn;
+    
     this.setState({ 
       stats, 
       msg1: msg,
       msg2: this.state.msg1,
       msg3: this.state.msg2,
-      modalVisible: false
+      modalVisible,
+      selectedBtn 
     });
   }
   
@@ -119,13 +170,18 @@ export default class StatsInput extends Component {
         onRequestClose={() => this.setState({modalVisible: false})} animationType={"slide"}
         transparent={false}>
           <View style={styles.modal}>
-            {this.renderPlayers()}
-            <Button style={styles.cancel} title="Cancel" onPress={this.modalClosedHandler} color="red"/>
+            <Text style={{fontSize: 25}}>{this.state.question}</Text>
+            <ScrollView style={styles.players}>
+              {this.renderPlayers()}
+            </ScrollView>
+            <View style={styles.cancel}>
+              <Button title="Cancel" onPress={this.modalClosedHandler} color="red"/>
+            </View>
           </View>
         </Modal>
         <View style={styles.buttons}>
-          <Button title="View Stats" onPress={() => navigate('StatsOutput')}/>
-          <Button title="End Game" onPress={() => navigate('TopPerformers')}/>
+          <Button title="View Stats" onPress={() => navigate('StatsOutput', { stats: this.state.stats })}/>
+          <Button title="End Game" onPress={() => navigate('TopPerformers', { stats: this.state.stats })}/>
         </View>
         <View style={styles.output}>
           <Text style={{fontSize: 20, color: 'red', textAlign: 'center'}}>{this.state.msg1}</Text>
@@ -196,7 +252,16 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   modal: {
-    margin: 30,
+    flex: 1,
+    marginTop: 60,
+    alignItems: 'center'
+  },
+  players: {
+    maxHeight: '85%',
+  },
+  cancel: {
+    position: 'absolute',
+    bottom: 20
   },
   buttons: {
     flex: 1,
