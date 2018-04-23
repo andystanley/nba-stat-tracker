@@ -24,11 +24,107 @@ export default class Home extends Component {
     title: 'Home'
   };
 
+  formatTeam(team) {
+    switch (team) {
+      case "tor":
+        return "Toronto Raptors"
+        break;
+      case "gsw":
+        return "Golden State Warriors"
+        break;
+      case "lac":
+        return "Los Angeles Clippers"
+        break;
+      case "lal":
+        return "Los Angeles Lakers"
+        break;
+      case "pho":
+        return "Phoenix Suns"
+        break;
+      case "sac":
+        return "Sacramento Kings"
+        break;
+      case "dal":
+        return "Dallas Mavericks"
+        break;
+        case "hou":
+        return "Houston Rockets"
+        break;
+      case "mem":
+        return "Memphis Grizzlies"
+        break;
+      case "nor":
+        return "New Orleans Pelicans"
+        break;
+      case "sas":
+        return "San Antonio Spurs"
+        break;
+        case "den":
+        return "Denver Nuggets"
+        break;
+      case "min":
+        return "Minnesota Timberwolves"
+        break;
+      case "okc":
+        return "Oklahoma City Thunder"
+        break;
+      case "por":
+        return "Portland Trailblazers"
+        break;
+      case "uth":
+        return "Utah Jazz"
+        break;
+      case "bos":
+        return "Boston Celtics"
+        break;
+      case "bro":
+        return "Brooklyn Nets"
+        break;
+      case "nyk":
+        return "New York Knicks"
+        break;
+      case "phi":
+        return "Philadelphia 76ers"
+        break;
+      case "chi":
+        return "Chicago Bulls"
+        break;
+        case "cle":
+        return "Cleveland Cavaliers"
+        break;
+      case "det":
+        return "Detroit Pistons"
+        break;
+      case "ind":
+        return "Indiana Pacers"
+        break;
+        case "mil":
+        return "Milwaukee Bucks"
+        break;
+      case "atl":
+        return "Atlanta Hawks"
+        break;
+        case "cha":
+        return "Charlotte Hornets"
+        break;
+      case "mia":
+        return "Miami Heat"
+        break;
+      case "orl":
+        return "Orlando Magic"
+        break;
+        case "was":
+        return "Washington Wizards"
+        break;
+      default:
+        break;
+    }
+  }
   renderTeams() {
     return this.state.teams.map((team) => {
       return (
-        <TouchableOpacity key={team} onPress={() => this.setState( { team })}>
-          <Text style={styles.team}>{team}</Text>
+        <TouchableOpacity key={team} onPress={() => this.setState({ team })}>
+          <Text style={styles.team}>{this.formatTeam(team)}</Text>
         </TouchableOpacity>
       );
     });
@@ -65,6 +161,7 @@ const styles = StyleSheet.create({
   header: {
     alignItems: 'center',
     marginTop: -30,
+    marginBottom: 10
   },
   teams: {
     width: '100%',
@@ -85,5 +182,6 @@ const styles = StyleSheet.create({
   team: {
     fontSize: 20,
     textAlign: 'center',
+    paddingBottom: 5
   }
 });

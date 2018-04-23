@@ -106,7 +106,6 @@ export default class StatsInput extends Component {
             p.ftMade += 1;
             p.points += 1;
             msg = p.name + " made a free throw";
-            this.btnSelectedHandler("assist");
             break;
           case "ftMissed":
             p.ftMissed += 1;
@@ -139,8 +138,8 @@ export default class StatsInput extends Component {
       return p;
     }); 
 
-    let modalVisible = this.state.selectedBtn === '2pt' || this.state.selectedBtn === '3pt' || this.state.selectedBtn === 'ftMade' ? true : false;
-    let selectedBtn = this.state.selectedBtn === '2pt' || this.state.selectedBtn === '3pt' || this.state.selectedBtn === 'ftMade' ? 'assist' : this.state.selectedBtn;
+    let modalVisible = this.state.selectedBtn === '2pt' || this.state.selectedBtn === '3pt' ? true : false;
+    let selectedBtn = this.state.selectedBtn === '2pt' || this.state.selectedBtn === '3pt' ? 'assist' : this.state.selectedBtn;
     
     this.setState({ 
       stats, 
