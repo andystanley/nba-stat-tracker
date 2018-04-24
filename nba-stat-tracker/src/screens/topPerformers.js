@@ -17,41 +17,50 @@ export default class TopPerformers extends Component {
 
   componentDidMount() {
     const { stats } = this.props.navigation.state.params;
+    let points = 0;
+    let assists = 0;
+    let rebounds = 0;
+    let pointsPlayer;
+    let assistsPlayer;
+    let reboundsPlayer;
 
     for (i=0; i < stats.length; i++) {
-      if (stats[i].points > this.state.points) {
+      if (stats[i].points > points) {
         let name = stats[i].name;
         name = name.split(' ').slice(-1).join(' ');
-        this.setState({
-          points: stats[i].points,
-          pointsPlayer: name
-        });
+        points = stats[i].points;
+        pointsPlayer = name;
       }
 
-      if (stats[i].assists > this.state.assists) {
+      if (stats[i].assists > assists) {
         this.setState({assists: stats[i].assists});
         let name = stats[i].name;
         name = name.split(' ').slice(-1).join(' ');
-        this.setState({
-          assists: stats[i].assists,
-          assistsPlayer: name
-        });
+        assists = stats[i].assists;
+        assistsPlayer = name;
       }
 
-      if (stats[i].rebounds > this.state.rebounds) {
+      if (stats[i].rebounds > rebounds) {
         let name = stats[i].name;
         name = name.split(' ').slice(-1).join(' ');
-        this.setState({
-          rebounds: stats[i].rebounds,
-          reboundsPlayer: name
-        });
+        rebounds = stats[i].rebounds,
+        reboundsPlayer = name
       }
     }
+    this.setState({
+      points,
+      assists,
+      rebounds,
+      pointsPlayer,
+      assistsPlayer,
+      reboundsPlayer
+    });
   }
 
   render() {
     const { navigate } = this.props.navigation;
     const {points, pointsPlayer, assists, assistsPlayer, rebounds, reboundsPlayer} = this.state;
+
     return (
       <View style={styles.container}>
         <View style={styles.header}>
